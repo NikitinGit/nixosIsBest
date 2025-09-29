@@ -7,10 +7,11 @@
     ./impermanence.nix
     ../../modules/audio.nix
     ../../modules/bluetooth.nix
-    ../../modules/de/cosmic.nix
+    ../../modules/de/gnome.nix
     ../../modules/flatpak.nix
     ../../modules/games.nix
     ../../modules/locale.nix
+    ../../modules/nvidia.nix
     ../../modules/shell/zsh.nix
     ../../modules/system.nix
     ../../modules/stylix.nix
@@ -23,25 +24,33 @@
       isNormalUser = true;
       description = userdesc;
       extraGroups = [ "networkmanager" "wheel" "docker" ];
-      hashedPassword = "$6$J91OG.NW1Dz35n2S$L8pwihewop1tEe.x6YbjYIHRgyyax9E.q.mu/HL49xZkJEVD8DzKn.9s2rWJLWrJuL1WdpJ9NzymWQvJMBro8.";
+      hashedPassword = "$6$KsXM94WpuFhxSCjz$ci5yTkLvgsOtFbS/ARWWM6lsEjMBo4mKxUuwDxQ3K3LEwU9d/SY0uA.GlCDqulDWOfC0KzTgejqhbvXPlMS6c.";
     };
   };
+
+  networking.extraHosts =
+  ''
+    127.0.0.1 local.strikerstat-stage.twc1.net
+    127.0.0.1 local.strikerstat-preprod.twc1.net
+  '';
 
   services.v2raya.enable = true;
 
   environment.systemPackages = with pkgs; [
     bitwarden-desktop
     brave
-    discord
+    clash-verge-rev
+    claude-code
+    #discord
     element-desktop
     gnumake
     gopass
     gpg-tui
     grimblast
+    insomnia
     just
     libreoffice-qt
     lunarvim
-    nekoray
     prismlauncher
     qbittorrent
     telegram-desktop
@@ -53,11 +62,22 @@
     winetricks
     wineWowPackages.stable
     woeusb
+    android-studio 
+    jetbrains.idea-ultimate
   ];
 
   services.flatpak.packages = [
-    "com.google.AndroidStudio"
-    "com.jetbrains.IntelliJ-IDEA-Community"
     "com.spotify.Client"
   ];
+
+  programs.nekoray = {
+    enable = true;
+    tunMode.enable = true;
+  };
+
+  programs.appimage.enable = true;
+  programs.appimage.binfmt = true;
+  programs.appimage.package = pkgs.appimage-run.override {
+    extraPkgs = pkgs: [ pkgs.libepoxy ];
+  };
 }
